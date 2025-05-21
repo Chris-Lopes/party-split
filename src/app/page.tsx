@@ -7,8 +7,16 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Party } from "@prisma/client";
 
-async function getParties() {
+// Define the type for parties that includes the _count field
+type PartyWithMemberCount = Party & {
+  _count: {
+    members: number;
+  };
+};
+
+async function getParties(): Promise<PartyWithMemberCount[]> {
   const parties = await prisma.party.findMany({
     orderBy: {
       createdAt: "desc",
