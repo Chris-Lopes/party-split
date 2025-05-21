@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,5 +7,57 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-        
 
+model Party {
+  id        String    @id @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  members   Member[]
+  expenses  Expense[]
+}
+
+model Member {
+  id                  String               @id @default(cuid())
+  name                String
+  credits             Float                @default(0)
+  partyId             String
+  party               Party                @relation(fields: [partyId], references: [id])
+  expenseParticipants ExpenseParticipant[]
+  createdExpenses     Expense[]            @relation("ExpenseCreator")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([partyId])
+}
+
+model Expense {
+  id           String               @id @default(cuid())
+  description  String
+  amount       Float
+  createdById  String
+  createdBy    Member               @relation("ExpenseCreator", fields: [createdById], references: [id])
+  partyId      String
+  party        Party                @relation(fields: [partyId], references: [id])
+  participants ExpenseParticipant[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@index([createdById])
+  @@index([partyId])
+}
+
+model ExpenseParticipant {
+  id        String   @id @default(cuid())
+  expenseId String
+  expense   Expense  @relation(fields: [expenseId], references: [id])
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id])
+  share     Float // The amount this member needs to pay
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([expenseId, memberId])
+  @@index([expenseId])
+  @@index([memberId])
+}
