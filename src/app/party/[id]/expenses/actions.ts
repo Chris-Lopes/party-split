@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 export async function addExpense(formData: FormData) {
   const description = formData.get("description") as string;
@@ -20,37 +21,39 @@ export async function addExpense(formData: FormData) {
   const sharePerMember = amount / memberIds.length;
 
   // Create the expense and all participant records in a transaction
-  const expense = await prisma.$transaction(async (tx) => {
-    // Create the expense
-    const expense = await tx.expense.create({
-      data: {
-        description: description.trim(),
-        amount,
-        partyId,
-        createdById,
-        participants: {
-          create: memberIds.map((memberId) => ({
-            memberId,
-            share: sharePerMember,
-          })),
-        },
-      },
-    });
-
-    // Update credits for all participating members
-    for (const memberId of memberIds) {
-      await tx.member.update({
-        where: { id: memberId },
+  const expense = await prisma.$transaction(
+    async (tx: Prisma.TransactionClient) => {
+      // Create the expense
+      const expense = await tx.expense.create({
         data: {
-          credits: {
-            decrement: sharePerMember,
+          description: description.trim(),
+          amount,
+          partyId,
+          createdById,
+          participants: {
+            create: memberIds.map((memberId) => ({
+              memberId,
+              share: sharePerMember,
+            })),
           },
         },
       });
-    }
 
-    return expense;
-  });
+      // Update credits for all participating members
+      for (const memberId of memberIds) {
+        await tx.member.update({
+          where: { id: memberId },
+          data: {
+            credits: {
+              decrement: sharePerMember,
+            },
+          },
+        });
+      }
+
+      return expense;
+    }
+  );
 
   revalidatePath(`/party/${partyId}/expenses`);
   return { success: true, expenseId: expense.id };
