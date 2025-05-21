@@ -7,10 +7,12 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Party } from "@prisma/client";
 
 // Define the type for parties that includes the _count field
-type PartyWithMemberCount = Party & {
+type PartyWithMemberCount = {
+  id: string;
+  name: string;
+  createdAt: Date;
   _count: {
     members: number;
   };
