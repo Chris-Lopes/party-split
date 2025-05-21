@@ -22,11 +22,12 @@ async function getParty(id: string) {
   return party;
 }
 
-export default async function PartyPage({
-  params,
-}: {
+type Props = {
   params: { id: string };
-}) {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default async function PartyPage({ params }: Props) {
   const party = await getParty(params.id);
 
   return (
