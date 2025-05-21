@@ -30,12 +30,12 @@ async function getPartyWithExpenses(id: string) {
   return party;
 }
 
-type Props = {
+interface PageProps {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+  searchParams: Record<string, string | string[] | undefined>;
+}
 
-export default async function ExpensesPage({ params }: Props) {
+export default async function ExpensesPage({ params }: PageProps) {
   const party = await getPartyWithExpenses(params.id);
 
   return (

@@ -22,12 +22,12 @@ async function getParty(id: string) {
   return party;
 }
 
-type Props = {
+interface PageProps {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+  searchParams: Record<string, string | string[] | undefined>;
+}
 
-export default async function PartyPage({ params }: Props) {
+export default async function PartyPage({ params }: PageProps) {
   const party = await getParty(params.id);
 
   return (
