@@ -28,6 +28,15 @@ export function CreateExpenseDialog({
     new Set()
   );
   const [isLoading, setIsLoading] = useState(false);
+  
+  const selectAllMembers = () => {
+    const allMemberIds = members.map(member => member.id);
+    setSelectedMembers(new Set(allMemberIds));
+  };
+  
+  const unselectAllMembers = () => {
+    setSelectedMembers(new Set());
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,9 +117,40 @@ export function CreateExpenseDialog({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Split Between
-            </label>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+              <div>
+                <label className="block text-sm font-medium">
+                  Split Between
+                </label>
+                {members.length > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    {selectedMembers.size} of {members.length} selected
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={selectAllMembers}
+                  className="text-xs"
+                >
+                  Select All
+                </Button>
+                {selectedMembers.size > 0 && (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={unselectAllMembers}
+                    className="text-xs"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
             <div className="space-y-2">
               {members.map((member) => (
                 <div key={member.id} className="flex items-center space-x-2">
