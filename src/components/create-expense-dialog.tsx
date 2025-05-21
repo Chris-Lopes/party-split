@@ -28,12 +28,12 @@ export function CreateExpenseDialog({
     new Set()
   );
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const selectAllMembers = () => {
-    const allMemberIds = members.map(member => member.id);
+    const allMemberIds = members.map((member) => member.id);
     setSelectedMembers(new Set(allMemberIds));
   };
-  
+
   const unselectAllMembers = () => {
     setSelectedMembers(new Set());
   };
@@ -129,9 +129,9 @@ export function CreateExpenseDialog({
                 )}
               </div>
               <div className="flex gap-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   size="sm"
                   onClick={selectAllMembers}
                   className="text-xs"
@@ -139,9 +139,9 @@ export function CreateExpenseDialog({
                   Select All
                 </Button>
                 {selectedMembers.size > 0 && (
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     size="sm"
                     onClick={unselectAllMembers}
                     className="text-xs"
