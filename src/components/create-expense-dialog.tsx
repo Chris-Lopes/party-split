@@ -79,7 +79,7 @@ export function CreateExpenseDialog({
       <DialogTrigger asChild>
         <Button>Add Expense</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Expense</DialogTitle>
         </DialogHeader>
@@ -151,22 +151,24 @@ export function CreateExpenseDialog({
                 )}
               </div>
             </div>
-            <div className="space-y-2">
-              {members.map((member) => (
-                <div key={member.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`member-${member.id}`}
-                    checked={selectedMembers.has(member.id)}
-                    onCheckedChange={() => toggleMember(member.id)}
-                  />
-                  <label
-                    htmlFor={`member-${member.id}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {member.name}
-                  </label>
-                </div>
-              ))}
+            <div className="max-h-48 overflow-y-auto pr-1 border rounded-md p-2">
+              <div className="space-y-2">
+                {members.map((member) => (
+                  <div key={member.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`member-${member.id}`}
+                      checked={selectedMembers.has(member.id)}
+                      onCheckedChange={() => toggleMember(member.id)}
+                    />
+                    <label
+                      htmlFor={`member-${member.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {member.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <Button
