@@ -1,5 +1,6 @@
 import { CreatePartyDialog } from "@/components/create-party-dialog";
 import { prisma } from "@/lib/db";
+import { delay } from "@/lib/delay";
 import Link from "next/link";
 import {
   Card,
@@ -19,6 +20,9 @@ type PartyWithMemberCount = {
 };
 
 async function getParties(): Promise<PartyWithMemberCount[]> {
+  // Add small delay to make loading state visible during development
+  await delay();
+
   const parties = await prisma.party.findMany({
     orderBy: {
       createdAt: "desc",

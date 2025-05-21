@@ -1,10 +1,14 @@
 import { prisma } from "@/lib/db";
+import { delay } from "@/lib/delay";
 import { notFound } from "next/navigation";
 import { CreateExpenseDialog } from "@/components/create-expense-dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
 async function getPartyWithExpenses(id: string) {
+  // Add small delay to make loading state visible during development
+  await delay();
+
   const party = await prisma.party.findUnique({
     where: { id },
     include: {

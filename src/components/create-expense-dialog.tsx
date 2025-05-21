@@ -12,6 +12,7 @@ import {
 import { addExpense } from "@/app/party/[id]/expenses/actions";
 import { Member } from "@prisma/client";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateExpenseDialog({
   partyId,
@@ -26,22 +27,31 @@ export function CreateExpenseDialog({
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(
     new Set()
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("description", description);
-    formData.append("amount", amount);
-    formData.append("partyId", partyId);
-    formData.append("memberIds", Array.from(selectedMembers).join(","));
+    setIsLoading(true);
 
-    const result = await addExpense(formData);
-    if (result.success) {
-      setIsOpen(false);
-      setDescription("");
-      setAmount("");
-      setSelectedMembers(new Set());
-      window.location.reload();
+    try {
+      const formData = new FormData();
+      formData.append("description", description);
+      formData.append("amount", amount);
+      formData.append("partyId", partyId);
+      formData.append("memberIds", Array.from(selectedMembers).join(","));
+
+      const result = await addExpense(formData);
+      if (result.success) {
+        setIsOpen(false);
+        setDescription("");
+        setAmount("");
+        setSelectedMembers(new Set());
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Failed to add expense:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,9 +132,16 @@ export function CreateExpenseDialog({
           <Button
             type="submit"
             className="w-full"
-            disabled={selectedMembers.size === 0}
+            disabled={selectedMembers.size === 0 || isLoading}
           >
-            Add Expense
+            {isLoading ? (
+              <>
+                <Spinner size="sm" />
+                Adding...
+              </>
+            ) : (
+              "Add Expense"
+            )}
           </Button>
         </form>
       </DialogContent>

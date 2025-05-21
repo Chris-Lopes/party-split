@@ -10,26 +10,36 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { addMember } from "@/app/party/[id]/actions";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateMemberDialog({ partyId }: { partyId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [memberName, setMemberName] = useState("");
   const [credits, setCredits] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", memberName);
-    formData.append("credits", credits);
-    formData.append("partyId", partyId);
+    setIsLoading(true);
 
-    const result = await addMember(formData);
-    if (result.success) {
-      setIsOpen(false);
-      setMemberName("");
-      setCredits("");
-      // Refresh the page to show new member
-      window.location.reload();
+    try {
+      const formData = new FormData();
+      formData.append("name", memberName);
+      formData.append("credits", credits);
+      formData.append("partyId", partyId);
+
+      const result = await addMember(formData);
+      if (result.success) {
+        setIsOpen(false);
+        setMemberName("");
+        setCredits("");
+        // Refresh the page to show new member
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Failed to add member:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,8 +82,15 @@ export function CreateMemberDialog({ partyId }: { partyId: string }) {
               required
             />
           </div>
-          <Button type="submit" className="w-full">
-            Add Member
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Spinner size="sm" />
+                Adding...
+              </>
+            ) : (
+              "Add Member"
+            )}
           </Button>
         </form>
       </DialogContent>

@@ -10,20 +10,30 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createParty } from "@/app/actions";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreatePartyDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [partyName, setPartyName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", partyName);
+    setIsLoading(true);
 
-    const result = await createParty(formData);
-    if (result.success) {
-      setIsOpen(false);
-      window.location.href = `/party/${result.partyId}`;
+    try {
+      const formData = new FormData();
+      formData.append("name", partyName);
+
+      const result = await createParty(formData);
+      if (result.success) {
+        setIsOpen(false);
+        window.location.href = `/party/${result.partyId}`;
+      }
+    } catch (error) {
+      console.error("Failed to create party:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,8 +61,15 @@ export function CreatePartyDialog() {
               required
             />
           </div>
-          <Button type="submit" className="w-full">
-            Create Party
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Spinner size="sm" />
+                Creating...
+              </>
+            ) : (
+              "Create Party"
+            )}
           </Button>
         </form>
       </DialogContent>
