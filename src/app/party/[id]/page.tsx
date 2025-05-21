@@ -22,13 +22,15 @@ async function getParty(id: string) {
   return party;
 }
 
-interface PageProps {
-  params: { id: string };
-  searchParams: Record<string, string | string[] | undefined>;
-}
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
 
-export default async function PartyPage({ params }: PageProps) {
-  const party = await getParty(params.id);
+export default async function Page({ params }: any) {
+  const resolvedParams = await Promise.resolve(params);
+  const party = await getParty(resolvedParams.id);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24">

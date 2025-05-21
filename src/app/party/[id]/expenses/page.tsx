@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { CreateExpenseDialog } from "@/components/create-expense-dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 async function getPartyWithExpenses(id: string) {
   const party = await prisma.party.findUnique({
@@ -30,13 +29,15 @@ async function getPartyWithExpenses(id: string) {
   return party;
 }
 
-interface PageProps {
-  params: { id: string };
-  searchParams: Record<string, string | string[] | undefined>;
-}
+type ExpensesPageProps = {
+  params: {
+    id: string;
+  };
+};
 
-export default async function ExpensesPage({ params }: PageProps) {
-  const party = await getPartyWithExpenses(params.id);
+export default async function Page({ params }: any) {
+  const resolvedParams = await Promise.resolve(params);
+  const party = await getPartyWithExpenses(resolvedParams.id);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24">
