@@ -20,9 +20,6 @@ type PartyWithMemberCount = {
 };
 
 async function getParties(): Promise<PartyWithMemberCount[]> {
-  // Add small delay to make loading state visible during development
-  await delay();
-
   const parties = await prisma.party.findMany({
     orderBy: {
       createdAt: "desc",

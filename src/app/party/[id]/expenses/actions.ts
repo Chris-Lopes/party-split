@@ -39,17 +39,19 @@ export async function addExpense(formData: FormData) {
         },
       });
 
-      // Update credits for all participating members
-      for (const memberId of memberIds) {
-        await tx.member.update({
-          where: { id: memberId },
-          data: {
-            credits: {
-              decrement: sharePerMember,
+      // Update credits for all participating members - do this in parallel for better performance
+      await Promise.all(
+        memberIds.map((memberId) =>
+          tx.member.update({
+            where: { id: memberId },
+            data: {
+              credits: {
+                decrement: sharePerMember,
+              },
             },
-          },
-        });
-      }
+          })
+        )
+      );
 
       return expense;
     }

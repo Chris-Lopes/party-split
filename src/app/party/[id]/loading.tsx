@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
-export default function Loading(): React.ReactNode {
+export default function Loading(): React.ReactElement {
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24">
       <div className="w-full max-w-4xl">

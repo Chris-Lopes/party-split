@@ -37,8 +37,17 @@ export function CreatePartyDialog() {
     }
   };
 
+  // Reset the form when the dialog closes
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      setPartyName("");
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>Create New Party</Button>
       </DialogTrigger>
