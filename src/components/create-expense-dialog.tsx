@@ -79,7 +79,7 @@ export function CreateExpenseDialog({
       <DialogTrigger asChild>
         <Button>Add Expense</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md w-full max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Add New Expense</DialogTitle>
         </DialogHeader>
