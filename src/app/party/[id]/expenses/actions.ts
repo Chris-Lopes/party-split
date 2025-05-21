@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
 
 export async function addExpense(formData: FormData) {
   const description = formData.get("description") as string;
@@ -22,7 +21,7 @@ export async function addExpense(formData: FormData) {
 
   // Create the expense and all participant records in a transaction
   const expense = await prisma.$transaction(
-    async (tx: Prisma.TransactionClient) => {
+    async (tx) => {
       // Create the expense
       const expense = await tx.expense.create({
         data: {
